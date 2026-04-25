@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Repify</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --indigo: #6366f1;
+  --sky: #38bdf8;
+  --accent: #a78bfa;
+  --dark: #020617;
+  --mid: #0f172a;
+}
+
+* { box-sizing: border-box; scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--dark);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+h1,h2,h3,h4,h5 { font-family: 'Syne', sans-serif; }
+
+/* ── BACKGROUND BLOBS ── */
+.blob {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  width: 600px; height: 600px;
+  filter: blur(80px);
+  animation: floatBlob 10s ease-in-out infinite;
+}
+.blob1 { top: -100px; left: -100px; background: radial-gradient(circle, rgba(99,102,241,0.3), transparent 65%); }
+.blob2 { top: 30%; right: -120px; background: radial-gradient(circle, rgba(56,189,248,0.2), transparent 65%); animation-delay: -4s; }
+.blob3 { bottom: -150px; left: 20%; background: radial-gradient(circle, rgba(167,139,250,0.2), transparent 65%); animation-delay: -7s; }
+@keyframes floatBlob {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-30px) scale(1.05); }
+}
+
+/* ── GLASS ── */
+.glass {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.09);
+}
+
+/* ── NAVBAR ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(2,6,23,0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo img { width: 36px; height: 36px; border-radius: 10px; }
+.nav-logo span { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; color: #fff; }
+
+.nav-links { display: flex; gap: 0; }
+.nav-links a {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  padding: 0 1rem;
+  height: 64px;
+  display: flex; align-items: center;
+  border-bottom: 2px solid transparent;
+  transition: 0.2s;
+  letter-spacing: 0.01em;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: #fff;
+  border-bottom-color: var(--indigo);
+}
+
+.nav-cta {
+  background: var(--indigo);
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.nav-cta:hover { background: #4f46e5; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,0.35); }
+
+/* Mobile hamburger */
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+.hamburger span { width: 22px; height: 2px; background: #fff; border-radius: 2px; transition: 0.3s; display: block; }
+.mobile-menu {
+  display: none;
+  position: fixed; top: 64px; left: 0; right: 0; z-index: 99;
+  background: rgba(2,6,23,0.97);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 1rem 2rem 1.5rem;
+  flex-direction: column; gap: 0;
+}
+.mobile-menu a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: 0.2s;
+}
+.mobile-menu a:hover { color: #fff; }
+.mobile-menu.open { display: flex; }
+
+@media (max-width: 860px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* ── SECTIONS ── */
+section { position: relative; z-index: 1; }
+
+/* ── HERO ── */
+#home {
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 6rem 2rem 4rem;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(99,102,241,0.15);
+  border: 1px solid rgba(99,102,241,0.3);
+  color: #a5b4fc;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 6px 14px; border-radius: 100px; margin-bottom: 2rem;
+}
+.hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #6366f1; animation: pulse 1.8s ease infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+
+.hero-h1 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+.hero-h1 .gradient {
+  background: linear-gradient(135deg, #6366f1 0%, #38bdf8 60%, #a78bfa 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+.hero-sub {
+  margin-top: 1.5rem;
+  color: rgba(255,255,255,0.55);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+.hero-btns { display: flex; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; justify-content: center; }
+
+.btn-primary {
+  background: var(--indigo);
+  color: #fff;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700; font-size: 0.95rem;
+  text-decoration: none;
+  transition: 0.25s;
+  letter-spacing: 0.02em;
+}
+.btn-primary:hover { background: #4f46e5; transform: translateY(-3px); box-shadow: 0 14px 40px rgba(99,102,241,0.35); }
+
+.btn-outline {
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.8);
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600; font-size: 0.95rem;
+  text-decoration: none;
+  transition: 0.25s;
+  backdrop-filter: blur(8px);
+}
+.btn-outline:hover { border-color: var(--indigo); color: #fff; transform: translateY(-3px); }
+
+/* Hero stats */
+.hero-stats {
+  display: flex; gap: 3rem; margin-top: 4rem;
+  flex-wrap: wrap; justify-content: center;
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2rem;
+  background: linear-gradient(135deg, #6366f1, #38bdf8);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* Hero cards grid */
+.hero-services {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;
+  margin-top: 4rem; max-width: 900px; width: 100%;
+}
+
+.service-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 1.5rem;
+  border-radius: 16px;
+  text-align: left;
+  transition: 0.3s;
+  text-decoration: none; color: inherit;
+  display: block;
+}
+.service-card:hover {
+  background: rgba(99,102,241,0.1);
+  border-color: rgba(99,102,241,0.35);
+  transform: translateY(-6px);
+  box-shadow: 0 24px 60px rgba(99,102,241,0.2);
+}
+.service-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(56,189,248,0.2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; margin-bottom: 1rem;
+}
+.service-card h3 { font-family: 'Syne',sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
+.service-card p { font-size: 0.83rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+.service-arrow { font-size: 0.8rem; color: var(--indigo); margin-top: 1rem; display: flex; align-items: center; gap: 4px; font-weight: 600; }
+
+@media(max-width:620px){ .hero-services{grid-template-columns:1fr;} }
+
+/* ── SECTION WRAPPER ── */
+.section-pad { padding: 6rem 2rem; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+
+.section-tag {
+  display: inline-block;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #818cf8;
+  background: rgba(99,102,241,0.12);
+  border: 1px solid rgba(99,102,241,0.25);
+  padding: 4px 12px; border-radius: 100px; margin-bottom: 1rem;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800; font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.02em; line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.section-sub {
+  color: rgba(255,255,255,0.5);
+  font-size: 1.05rem; line-height: 1.7;
+  max-width: 580px;
+}
+
+/* ── WHO WE ARE ── */
+#who {
+  background: linear-gradient(180deg, var(--dark) 0%, #070e1e 50%, var(--dark) 100%);
+}
+
+.who-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 4rem; align-items: center;
+  margin-top: 3rem;
+}
+
+.who-left .big-quote {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+.who-left .big-quote em {
+  font-style: normal;
+  background: linear-gradient(135deg, #6366f1, #38bdf8);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+.who-left p {
+  color: rgba(255,255,255,0.5);
+  margin-top: 1.5rem;
+  font-size: 0.97rem;
+  line-height: 1.75;
+}
+
+.who-right { display: flex; flex-direction: column; gap: 1rem; }
+
+.value-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  display: flex; align-items: flex-start; gap: 1rem;
+  transition: 0.3s;
+}
+.value-card:hover { border-color: rgba(99,102,241,0.3); background: rgba(99,102,241,0.07); }
+.value-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+.value-card h4 { font-family: 'Syne',sans-serif; font-weight: 700; font-size: 0.97rem; margin-bottom: 0.3rem; }
+.value-card p { font-size: 0.83rem; color: rgba(255,255,255,0.45); line-height: 1.6; }
+
+.team-row {
+  display: flex; gap: 1.5rem; margin-top: 3rem; flex-wrap: wrap;
+}
+.team-card {
+  flex: 1; min-width: 200px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px; padding: 2rem 1.5rem;
+  text-align: center; transition: 0.3s;
+}
+.team-card:hover { transform: translateY(-6px); border-color: rgba(99,102,241,0.3); box-shadow: 0 20px 50px rgba(99,102,241,0.15); }
+.team-avatar {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--indigo), var(--sky));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne',sans-serif; font-weight: 800; font-size: 1.5rem;
+  margin: 0 auto 1rem;
+}
+.team-card h4 { font-family: 'Syne',sans-serif; font-weight: 700; font-size: 1rem; }
+.team-card .role { font-size: 0.78rem; color: #818cf8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.25rem; }
+.team-card p { font-size: 0.82rem; color: rgba(255,255,255,0.4); margin-top: 0.75rem; line-height: 1.6; }
+
+@media(max-width:760px){ .who-grid{grid-template-columns:1fr;gap:2rem;} }
+
+/* ── WHAT WE DO ── */
+#what { background: var(--dark); }
+
+.services-big-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem; margin-top: 3rem;
+}
+
+.svc-big-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px; padding: 2rem;
+  transition: 0.35s; position: relative; overflow: hidden;
+}
+.svc-big-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--indigo), var(--sky));
+  opacity: 0; transition: 0.35s;
+}
+.svc-big-card:hover { transform: translateY(-8px); border-color: rgba(99,102,241,0.3); box-shadow: 0 28px 70px rgba(99,102,241,0.18); }
+.svc-big-card:hover::before { opacity: 1; }
+
+.svc-big-icon {
+  width: 56px; height: 56px; border-radius: 16px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.25), rgba(56,189,248,0.15));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; margin-bottom: 1.5rem;
+}
+.svc-big-card h3 { font-family:'Syne',sans-serif; font-weight:700; font-size:1.1rem; margin-bottom: 0.6rem; }
+.svc-big-card p { font-size: 0.85rem; color: rgba(255,255,255,0.48); line-height: 1.7; }
+
+.svc-features { margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.svc-feature { font-size: 0.8rem; color: rgba(255,255,255,0.55); display: flex; align-items: center; gap: 8px; }
+.svc-feature::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--indigo); flex-shrink: 0; }
+
+.svc-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 1.5rem; font-size: 0.82rem; font-weight: 700;
+  color: #818cf8; text-decoration: none; letter-spacing: 0.03em;
+  transition: 0.2s;
+}
+.svc-link:hover { color: #a5b4fc; gap: 10px; }
+
+@media(max-width:900px){ .services-big-grid{grid-template-columns:repeat(2,1fr);} }
+@media(max-width:560px){ .services-big-grid{grid-template-columns:1fr;} }
+
+/* ── SUCCESS STORIES ── */
+#stories { background: linear-gradient(180deg, var(--dark) 0%, #06101f 50%, var(--dark) 100%); }
+
+.stories-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: end; margin-bottom: 3rem; }
+@media(max-width:760px){ .stories-intro{grid-template-columns:1fr;gap:1.5rem;} }
+
+.stories-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; }
+@media(max-width:900px){ .stories-grid{grid-template-columns:1fr;} }
+
+.story-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px; padding: 2rem;
+  transition: 0.35s;
+}
+.story-card:hover { transform: translateY(-8px); border-color: rgba(56,189,248,0.25); box-shadow: 0 28px 70px rgba(56,189,248,0.1); }
+
+.story-tag {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  color: #38bdf8; background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.2);
+  padding: 3px 10px; border-radius: 100px; display: inline-block; margin-bottom: 1.25rem;
+}
+
+.story-metric {
+  font-family: 'Syne',sans-serif; font-weight: 800;
+  font-size: 2.5rem; letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #6366f1, #38bdf8);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 0.25rem;
+}
+.story-metric-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.25rem; }
+
+.story-card h3 { font-family:'Syne',sans-serif; font-weight:700; font-size:1.05rem; margin-bottom: 0.6rem; }
+.story-card p { font-size: 0.85rem; color: rgba(255,255,255,0.48); line-height: 1.7; }
+
+.story-business {
+  margin-top: 1.5rem; padding-top: 1.25rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.biz-logo {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--indigo), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne',sans-serif; font-weight: 800; font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.biz-name { font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; }
+.biz-type { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+
+/* ── REVIEWS ── */
+#reviews { background: var(--dark); }
+
+.reviews-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; margin-top: 3rem; }
+@media(max-width:900px){ .reviews-grid{grid-template-columns:1fr 1fr;} }
+@media(max-width:560px){ .reviews-grid{grid-template-columns:1fr;} }
+
+.review-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px; padding: 1.75rem;
+  transition: 0.35s;
+}
+.review-card:hover { transform: translateY(-6px); border-color: rgba(251,191,36,0.25); box-shadow: 0 24px 60px rgba(251,191,36,0.1); }
+
+.review-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.g-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; padding: 5px 10px;
+}
+
+/* Google "G" logo recreated in SVG style */
+.google-g {
+  width: 18px; height: 18px; flex-shrink: 0;
+}
+
+.g-badge span { font-size: 0.72rem; font-weight: 600; color: rgba(255,255,255,0.5); }
+
+.stars { display: flex; gap: 2px; }
+.star { color: #fbbf24; font-size: 1rem; }
+
+.review-text {
+  font-size: 0.88rem; color: rgba(255,255,255,0.6); line-height: 1.72;
+  margin-bottom: 1.25rem;
+  font-style: italic;
+}
+
+.reviewer {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding-top: 1.1rem; border-top: 1px solid rgba(255,255,255,0.07);
+}
+.reviewer-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--indigo), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-family:'Syne',sans-serif; font-weight:800; font-size:0.85rem; color:#fff;
+  flex-shrink:0;
+}
+.reviewer-name { font-family:'Syne',sans-serif; font-weight:700; font-size:0.88rem; }
+.reviewer-biz { font-size:0.75rem; color:rgba(255,255,255,0.4); }
+
+/* ── CAREERS ── */
+#careers {
+  background: linear-gradient(180deg, var(--dark) 0%, #060d1c 60%, var(--dark) 100%);
+}
+
+.careers-hero {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 5rem; align-items: center; margin-top: 3rem;
+}
+@media(max-width:760px){ .careers-hero{grid-template-columns:1fr;gap:2.5rem;} }
+
+.careers-left h2 {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size: clamp(2rem,3.5vw,2.8rem); letter-spacing:-0.02em; line-height:1.15;
+}
+.careers-left h2 .gradient {
+  background: linear-gradient(135deg, #6366f1, #38bdf8, #a78bfa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.careers-left p { font-size:0.97rem; color:rgba(255,255,255,0.5); margin-top:1.25rem; line-height:1.75; }
+
+.perks-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 2rem; }
+.perk { display: flex; align-items: flex-start; gap: 0.75rem; }
+.perk-icon { font-size:1.2rem; margin-top:2px; flex-shrink:0; }
+.perk-text { font-size:0.9rem; color:rgba(255,255,255,0.6); line-height:1.6; }
+.perk-text strong { color:#fff; font-weight:600; }
+
+/* Apply form card */
+.apply-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 24px; padding: 2.5rem;
+}
+
+.apply-card h3 {
+  font-family:'Syne',sans-serif; font-weight:700; font-size:1.35rem;
+  margin-bottom: 0.5rem;
+}
+.apply-card .sub { font-size:0.85rem; color:rgba(255,255,255,0.45); margin-bottom: 1.75rem; }
+
+.form-field { display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1.1rem; }
+.form-field label { font-size:0.78rem; font-weight:600; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.08em; }
+.form-field input, .form-field textarea, .form-field select {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; padding: 0.75rem 1rem;
+  color: #fff; font-family:'DM Sans',sans-serif; font-size:0.92rem;
+  outline: none; transition: 0.2s; width:100%;
+  appearance: none;
+}
+.form-field input::placeholder, .form-field textarea::placeholder { color:rgba(255,255,255,0.25); }
+.form-field input:focus, .form-field textarea:focus, .form-field select:focus {
+  border-color: rgba(99,102,241,0.5);
+  background: rgba(99,102,241,0.08);
+}
+.form-field textarea { resize:vertical; min-height:100px; }
+
+.submit-btn {
+  width:100%; padding: 14px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color:#fff; border:none; border-radius:12px;
+  font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem;
+  cursor:pointer; transition:0.25s; letter-spacing:0.02em;
+  margin-top:0.5rem;
+}
+.submit-btn:hover { transform:translateY(-3px); box-shadow:0 14px 40px rgba(99,102,241,0.35); }
+
+.or-email {
+  text-align:center; margin-top:1.25rem;
+  font-size:0.82rem; color:rgba(255,255,255,0.35);
+}
+.or-email a { color:#818cf8; text-decoration:none; font-weight:600; }
+.or-email a:hover { color:#a5b4fc; }
+
+/* Opportunity cards */
+.opp-cards { display:flex; flex-direction:column; gap:1rem; margin-bottom:2rem; }
+.opp-card {
+  background: rgba(99,102,241,0.08);
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 14px; padding: 1.25rem 1.5rem;
+  display:flex; align-items:center; gap:1rem;
+}
+.opp-icon { font-size:1.4rem; flex-shrink:0; }
+.opp-card h4 { font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem; margin-bottom:0.2rem; }
+.opp-card p { font-size:0.8rem; color:rgba(255,255,255,0.45); }
+
+/* ── FOOTER ── */
+footer {
+  position:relative; z-index:1;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 3rem 2rem;
+  text-align: center;
+}
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+.footer-logo { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:1.5rem; }
+.footer-logo img { width:32px; height:32px; border-radius:8px; }
+.footer-logo span { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; }
+.footer-links { display:flex; gap:2rem; justify-content:center; flex-wrap:wrap; margin-bottom:1.5rem; }
+.footer-links a { font-size:0.85rem; color:rgba(255,255,255,0.4); text-decoration:none; transition:0.2s; }
+.footer-links a:hover { color:#fff; }
+.footer-copy { font-size:0.78rem; color:rgba(255,255,255,0.25); }
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity:0; transform:translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ── DIVIDER ── */
+.section-divider {
+  border:none;
+  height:1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  margin:0;
+}
+</style>
+</head>
+
+<body>
+
+<!-- BG BLOBS -->
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+
+<!-- ═══════════════════════════ NAVBAR ═══════════════════════════ -->
+<nav>
+  <a href="#home" class="nav-logo">
+    <img src="logo.png" alt="Repify" onerror="this.style.display='none'">
+    <span>Repify</span>
+  </a>
+
+  <div class="nav-links">
+    <a href="#who">Who We Are</a>
+    <a href="#what">What We Do</a>
+    <a href="#stories">Success Stories</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#careers">Careers</a>
+  </div>
+
+  <a href="#careers" class="nav-cta">Join Us</a>
+
+  <div class="hamburger" onclick="toggleMenu()" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#who" onclick="closeMenu()">Who We Are</a>
+  <a href="#what" onclick="closeMenu()">What We Do</a>
+  <a href="#stories" onclick="closeMenu()">Success Stories</a>
+  <a href="#reviews" onclick="closeMenu()">Reviews</a>
+  <a href="#careers" onclick="closeMenu()">Careers</a>
+</div>
+
+<!-- ═══════════════════════════ HOME / HERO ═══════════════════════════ -->
+<section id="home">
+  <div class="section-inner" style="text-align:center; padding-top:7rem; padding-bottom:3rem; display:flex; flex-direction:column; align-items:center;">
+
+    <div class="hero-badge reveal">
+      <span class="dot"></span>
+      Now Serving Local Businesses Across Australia
+    </div>
+
+    <h1 class="hero-h1 reveal" style="animation-delay:0.1s">
+      Grow Your Business.<br>
+      <span class="gradient">Dominate Your Market.</span>
+    </h1>
+
+    <p class="hero-sub reveal" style="animation-delay:0.2s">
+      Repify is the all-in-one growth system for local businesses — websites, email, social media, and reviews, all working together.
+    </p>
+
+    <div class="hero-btns reveal" style="animation-delay:0.3s">
+      <a href="#what" class="btn-primary">Explore Our Services</a>
+      <a href="#stories" class="btn-outline">See Results</a>
+    </div>
+
+    <div class="hero-stats reveal" style="animation-delay:0.4s">
+      <div class="stat-item">
+        <div class="stat-num">120+</div>
+        <div class="stat-label">Clients Served</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">59.9K</div>
+        <div class="stat-label">Social Reach</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4.9★</div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">3.2×</div>
+        <div class="stat-label">Avg. Revenue Lift</div>
+      </div>
+    </div>
+
+    <!-- Service cards -->
+    <div class="hero-services reveal" style="animation-delay:0.5s">
+      <a href="website.html" class="service-card">
+        <div class="service-icon">🌐</div>
+        <h3>Website Development</h3>
+        <p>High-converting sites built to turn visitors into paying customers.</p>
+        <div class="service-arrow">Get a website →</div>
+      </a>
+      <a href="email.html" class="service-card">
+        <div class="service-icon">✉️</div>
+        <h3>Email Marketing</h3>
+        <p>Automated campaigns that bring customers back, again and again.</p>
+        <div class="service-arrow">Manage emails →</div>
+      </a>
+      <a href="social.html" class="service-card">
+        <div class="service-icon">📱</div>
+        <h3>Social Media Marketing</h3>
+        <p>Influencer, UGC & Instagram promotions with a 59.9K audience.</p>
+        <div class="service-arrow">Manage social →</div>
+      </a>
+      <a href="reviews.html" class="service-card">
+        <div class="service-icon">⭐</div>
+        <h3>Review Funnel System</h3>
+        <p>Turn happy customers into 5-star Google reviews automatically.</p>
+        <div class="service-arrow">Build review funnel →</div>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════ WHO WE ARE ═══════════════════════════ -->
+<section id="who" class="section-pad">
+  <div class="section-inner">
+
+    <div class="who-grid">
+      <div class="who-left reveal">
+        <div class="section-tag">Who We Are</div>
+        <div class="big-quote">
+          We're the team that turns <em>ordinary local businesses</em> into household names.
+        </div>
+        <p>
+          Founded by marketers, designers, and growth strategists who grew tired of watching great local businesses get ignored online — Repify was built with one mission: give every local business the same unfair advantage that big brands have.
+        </p>
+        <p style="margin-top:1rem;">
+          We're not a faceless agency. We're your growth partner — obsessing over your numbers, your brand, and your customers the same way you do.
+        </p>
+      </div>
+
+      <div class="who-right reveal" style="transition-delay:0.15s">
+        <div class="value-card">
+          <div class="value-icon">🎯</div>
+          <div>
+            <h4>Results-Obsessed</h4>
+            <p>Every strategy we build is measured by one thing: revenue. Vanity metrics don't pay rent.</p>
+          </div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🤝</div>
+          <div>
+            <h4>Long-Term Partners</h4>
+            <p>We don't do one-off projects. We grow with you, adapting your strategy as your business scales.</p>
+          </div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">⚡</div>
+          <div>
+            <h4>Fast & Agile</h4>
+            <p>Local markets move fast. Our team responds in hours, not weeks, so you never miss an opportunity.</p>
+          </div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🔒</div>
+          <div>
+            <h4>Transparent Always</h4>
+            <p>Real-time dashboards, plain-English reports, and zero hidden fees. You always know exactly where your money goes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team -->
+    <div class="reveal" style="margin-top:4rem;">
+      <div class="section-tag">Meet the Team</div>
+    </div>
+    <div class="team-row reveal" style="transition-delay:0.1s">
+      <div class="team-card">
+        <div class="team-avatar">JR</div>
+        <h4>Jake Reynolds</h4>
+        <div class="role">Founder & CEO</div>
+        <p>10+ years in digital growth. Helped 50+ businesses double revenue in under 12 months.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#38bdf8,#6366f1)">SC</div>
+        <h4>Sophie Chen</h4>
+        <div class="role">Head of Design</div>
+        <p>Award-winning UX designer. Specialises in conversion-first web experiences that actually sell.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#a78bfa,#6366f1)">MO</div>
+        <h4>Marcus O'Brien</h4>
+        <div class="role">Social Growth Lead</div>
+        <p>Built a 59.9K-strong audience across niches. Knows exactly how to make content go local-viral.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#34d399,#38bdf8)">AL</div>
+        <h4>Aisha Liu</h4>
+        <div class="role">Email & CRM Strategist</div>
+        <p>Automated over $2M in repeat revenue through smart email sequences for local brands.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════ WHAT WE DO ═══════════════════════════ -->
+<section id="what" class="section-pad">
+  <div class="section-inner">
+
+    <div class="reveal" style="text-align:center; max-width:640px; margin:0 auto;">
+      <div class="section-tag">What We Do</div>
+      <h2 class="section-title">Everything your business needs to grow online</h2>
+      <p class="section-sub" style="margin:0 auto;">Four core systems, one seamless strategy. We handle the entire digital layer of your business so you can focus on what you do best.</p>
+    </div>
+
+    <div class="services-big-grid reveal" style="transition-delay:0.15s">
+
+      <div class="svc-big-card">
+        <div class="svc-big-icon">🌐</div>
+        <h3>Website Development</h3>
+        <p>We design and build fast, beautiful, mobile-first websites engineered to convert. Every page is A/B tested and optimised for local SEO.</p>
+        <div class="svc-features">
+          <div class="svc-feature">Custom conversion-optimised design</div>
+          <div class="svc-feature">Local SEO & Google Maps integration</div>
+          <div class="svc-feature">Booking, quote & lead forms</div>
+          <div class="svc-feature">Ongoing speed & security maintenance</div>
+        </div>
+        <a href="website.html" class="svc-link">Get started →</a>
+      </div>
+
+      <div class="svc-big-card">
+        <div class="svc-big-icon">✉️</div>
+        <h3>Email Marketing</h3>
+        <p>Automated email sequences that nurture leads, win back lost customers, and create loyal repeat buyers — without lifting a finger.</p>
+        <div class="svc-features">
+          <div class="svc-feature">Welcome & onboarding sequences</div>
+          <div class="svc-feature">Win-back & re-engagement campaigns</div>
+          <div class="svc-feature">Promotional & seasonal drops</div>
+          <div class="svc-feature">Full analytics & A/B testing</div>
+        </div>
+        <a href="email.html" class="svc-link">Get started →</a>
+      </div>
+
+      <div class="svc-big-card">
+        <div class="svc-big-icon">📱</div>
+        <h3>Social Media Marketing</h3>
+        <p>Reach real local customers through influencer partnerships, UGC content, and our own 59.9K Instagram audience built specifically for local promotion.</p>
+        <div class="svc-features">
+          <div class="svc-feature">Influencer & micro-influencer placement</div>
+          <div class="svc-feature">UGC content creation & licensing</div>
+          <div class="svc-feature">Instagram & TikTok growth strategy</div>
+          <div class="svc-feature">Monthly content calendars & posting</div>
+        </div>
+        <a href="social.html" class="svc-link">Get started →</a>
+      </div>
+
+      <div class="svc-big-card">
+        <div class="svc-big-icon">⭐</div>
+        <h3>Review Funnel System</h3>
+        <p>Our automated review system captures happy customers at the perfect moment and routes them straight to your Google listing — building trust on autopilot.</p>
+        <div class="svc-features">
+          <div class="svc-feature">SMS & email review request automation</div>
+          <div class="svc-feature">Negative feedback interception</div>
+          <div class="svc-feature">Google & Facebook review funnels</div>
+          <div class="svc-feature">Real-time review monitoring dashboard</div>
+        </div>
+        <a href="reviews.html" class="svc-link">Get started →</a>
+      </div>
+
+      <div class="svc-big-card" style="grid-column: span 2;">
+        <div style="display:flex;gap:2rem;align-items:center;flex-wrap:wrap;">
+          <div style="flex:1;min-width:200px;">
+            <div class="svc-big-icon">🚀</div>
+            <h3>The Repify Full-Stack Bundle</h3>
+            <p>For businesses serious about dominating their local market. All four systems integrated, cross-optimised, and managed by a dedicated account strategist.</p>
+            <div class="svc-features" style="margin-top:1rem;">
+              <div class="svc-feature">Dedicated account manager</div>
+              <div class="svc-feature">Monthly strategy & growth calls</div>
+              <div class="svc-feature">Priority 24hr support</div>
+              <div class="svc-feature">Guaranteed 90-day results roadmap</div>
+            </div>
+          </div>
+          <div style="flex:0 0 auto;">
+            <div style="background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.25);border-radius:16px;padding:1.5rem 2rem;text-align:center;">
+              <div style="font-size:0.78rem;color:#818cf8;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">Most Popular</div>
+              <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;letter-spacing:-0.03em;">All-in-One</div>
+              <div style="font-size:0.83rem;color:rgba(255,255,255,0.45);margin-top:0.25rem;">Website + Email + Social + Reviews</div>
+              <a href="#careers" class="btn-primary" style="display:inline-block;margin-top:1.25rem;font-size:0.85rem;">Book a Free Call</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════ SUCCESS STORIES ═══════════════════════════ -->
+<section id="stories" class="section-pad">
+  <div class="section-inner">
+
+    <div class="stories-intro reveal">
+      <div>
+        <div class="section-tag">Success Stories</div>
+        <h2 class="section-title">Real results for real businesses</h2>
+      </div>
+      <p style="color:rgba(255,255,255,0.48);font-size:0.97rem;line-height:1.75;">
+        We don't deal in promises. We deal in proof. Here's what happens when Repify's full-stack growth system goes to work for local businesses just like yours.
+      </p>
+    </div>
+
+    <div class="stories-grid reveal" style="transition-delay:0.1s">
+
+      <div class="story-card">
+        <div class="story-tag">Email + Reviews</div>
+        <div class="story-metric">+312%</div>
+        <div class="story-metric-label">Repeat Customer Revenue</div>
+        <h3>From invisible to unmissable in 90 days</h3>
+        <p>Marino's Pizzeria had incredible food but zero online presence. We built an automated email system, review funnel, and optimised their Google profile. Within 3 months, repeat orders tripled and they became the #1 rated Italian restaurant in their suburb.</p>
+        <div class="story-business">
+          <div class="biz-logo">MP</div>
+          <div>
+            <div class="biz-name">Marino's Pizzeria</div>
+            <div class="biz-type">Italian Restaurant · Melbourne, VIC</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-tag">Website + SEO</div>
+        <div class="story-metric">+187%</div>
+        <div class="story-metric-label">New Leads Per Month</div>
+        <h3>A new website that actually books jobs</h3>
+        <p>Coastal Plumbing was relying entirely on word of mouth. We designed a conversion-first website with a live booking form and local SEO strategy. Within 60 days they went from 8 enquiries/month to 23 — with zero ad spend.</p>
+        <div class="story-business">
+          <div class="biz-logo" style="background:linear-gradient(135deg,#38bdf8,#6366f1)">CP</div>
+          <div>
+            <div class="biz-name">Coastal Plumbing Co.</div>
+            <div class="biz-type">Trades & Services · Gold Coast, QLD</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-tag">Social Media</div>
+        <div class="story-metric">41K</div>
+        <div class="story-metric-label">New Followers in 60 Days</div>
+        <h3>Local café becomes a social media destination</h3>
+        <p>Sunstone Café wanted to be the café everyone talks about. Our UGC and influencer campaign put them in front of 59,000 local food lovers. Foot traffic jumped 68% and weekend queues became their new normal.</p>
+        <div class="story-business">
+          <div class="biz-logo" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">SC</div>
+          <div>
+            <div class="biz-name">Sunstone Café</div>
+            <div class="biz-type">Hospitality · Brisbane, QLD</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-tag">Full-Stack Bundle</div>
+        <div class="story-metric">$280K</div>
+        <div class="story-metric-label">Additional Annual Revenue</div>
+        <h3>A gym that finally filled its off-peak hours</h3>
+        <p>Peak Form Gym was losing members and struggling to sell morning sessions. With our full-stack approach — email re-engagement, social campaigns, and a polished website — they filled their roster and launched a profitable online membership tier.</p>
+        <div class="story-business">
+          <div class="biz-logo" style="background:linear-gradient(135deg,#10b981,#38bdf8)">PF</div>
+          <div>
+            <div class="biz-name">Peak Form Gym</div>
+            <div class="biz-type">Fitness & Wellness · Sydney, NSW</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-tag">Reviews + Email</div>
+        <div class="story-metric">4.3→4.9</div>
+        <div class="story-metric-label">Google Star Rating</div>
+        <h3>Reputation rescue: from average to outstanding</h3>
+        <p>Clean Cut Barbers had a handful of negative reviews dragging down their rating. Our review funnel automatically captured happy customers post-visit while our team helped manage and respond to existing reviews. Six weeks later: 4.9 stars, 80+ new reviews.</p>
+        <div class="story-business">
+          <div class="biz-logo" style="background:linear-gradient(135deg,#6366f1,#a78bfa)">CC</div>
+          <div>
+            <div class="biz-name">Clean Cut Barbers</div>
+            <div class="biz-type">Hair & Grooming · Perth, WA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-tag">Website + Social</div>
+        <div class="story-metric">+94%</div>
+        <div class="story-metric-label">Online Bookings</div>
+        <h3>Beauty studio goes fully booked weeks in advance</h3>
+        <p>Lumière Beauty was relying on DMs to book clients. We built a sleek booking website and drove traffic via Instagram influencer features. Within 8 weeks their calendar was booked out 3 weeks ahead and they hired two additional therapists to keep up.</p>
+        <div class="story-business">
+          <div class="biz-logo" style="background:linear-gradient(135deg,#f472b6,#a78bfa)">LB</div>
+          <div>
+            <div class="biz-name">Lumière Beauty Studio</div>
+            <div class="biz-type">Beauty & Wellness · Adelaide, SA</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════ REVIEWS ═══════════════════════════ -->
+<section id="reviews" class="section-pad">
+  <div class="section-inner">
+
+    <div class="reveal" style="text-align:center;max-width:580px;margin:0 auto 0;">
+      <div class="section-tag">Client Reviews</div>
+      <h2 class="section-title">Don't take our word for it</h2>
+      <p class="section-sub" style="margin:0 auto;">Verified Google reviews from real business owners who've worked with Repify.</p>
+    </div>
+
+    <div class="reviews-grid reveal" style="transition-delay:0.1s">
+
+      <!-- Review 1 -->
+      <div class="review-card">
+        <div class="review-header">
+          <div class="stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+          <div class="g-badge">
+            <svg class="google-g" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            <span>Google Review</span>
+          </div>
+        </div>
+        <p class="review-text">"Repify completely transformed how we show up online. Within two months our phone was ringing non-stop and we had to hire extra staff. Best investment I've ever made for my business."</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar">DM</div>
+          <div>
+            <div class="reviewer-name">Daniel Moretti</div>
+            <div class="reviewer-biz">Owner, Moretti's Auto Detailing · Sydney</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 2 -->
+      <div class="review-card">
+        <div class="review-header">
+          <div class="stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+          <div class="g-badge">
+            <svg class="google-g" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            <span>Google Review</span>
+          </div>
+        </div>
+        <p class="review-text">"I was sceptical at first — I'd tried other agencies before. But Repify is different. They actually care about results. Our Google reviews went from 4.1 to 4.9 stars and bookings are up 80%. Genuinely blown away."</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar" style="background:linear-gradient(135deg,#f472b6,#a78bfa)">PK</div>
+          <div>
+            <div class="reviewer-name">Priya Kapoor</div>
+            <div class="reviewer-biz">Director, Bliss Day Spa · Melbourne</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 3 -->
+      <div class="review-card">
+        <div class="review-header">
+          <div class="stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+          <div class="g-badge">
+            <svg class="google-g" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            <span>Google Review</span>
+          </div>
+        </div>
+        <p class="review-text">"Our website was embarrassingly outdated. Repify rebuilt it in two weeks and it looks incredible. More importantly, we went from 3-4 online enquiries a week to 15+. The ROI has been insane."</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar" style="background:linear-gradient(135deg,#10b981,#38bdf8)">TW</div>
+          <div>
+            <div class="reviewer-name">Tom Whitfield</div>
+            <div class="reviewer-biz">Owner, Whitfield Electrical · Brisbane</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 4 -->
+      <div class="review-card">
+        <div class="review-header">
+          <div class="stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+          <div class="g-badge">
+            <svg class="google-g" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            <span>Google Review</span>
+          </div>
+        </div>
+        <p class="review-text">"The social media campaign Repify ran for our café was unbelievable. We went from 2,000 to over 18,000 Instagram followers in 60 days and the weekend foot traffic doubled. The team is professional, creative, and fast."</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">LT</div>
+          <div>
+            <div class="reviewer-name">Lily Tran</div>
+            <div class="reviewer-biz">Co-Owner, Harvest & Hive Café · Adelaide</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 5 -->
+      <div class="review-card">
+        <div class="review-header">
+          <div class="stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+          <div class="g-badge">
+            <svg class="google-g" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            <span>Google Review</span>
+          </div>
+        </div>
+        <p class="review-text">"We were drowning in a sea of competition. Repify's email funnel brought back 40% of our lapsed customers and our revenue jumped by over $12,000 in the first month alone. I cannot recommend them highly enough."</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar" style="background:linear-gradient(135deg,#6366f1,#38bdf8)">RN</div>
+          <div>
+            <div class="reviewer-name">Ryan Nguyen</div>
+            <div class="reviewer-biz">Owner, Nguyen's Physio & Rehab · Perth</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 6 -->
+      <div class="review-card">
+        <div class="review-header">
+          <div class="stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+          <div class="g-badge">
+            <svg class="google-g" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            <span>Google Review</span>
+          </div>
+        </div>
+        <p class="review-text">"I spent years trying to figure out digital marketing on my own. Repify sorted it all out in weeks. The transparency is what gets me — I can see exactly what's happening with my campaigns at all times. Outstanding service."</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar" style="background:linear-gradient(135deg,#a78bfa,#f472b6)">SH</div>
+          <div>
+            <div class="reviewer-name">Sandra Hughes</div>
+            <div class="reviewer-biz">Owner, Hughes Family Dental · Gold Coast</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════ CAREERS ═══════════════════════════ -->
+<section id="careers" class="section-pad">
+  <div class="section-inner">
+
+    <div class="reveal" style="text-align:center;max-width:600px;margin:0 auto 3rem;">
+      <div class="section-tag">Careers</div>
+      <h2 class="section-title">Join the Repify network</h2>
+      <p class="section-sub" style="margin:0 auto;">We're looking for driven, well-connected individuals to help bring Repify to businesses across Australia. No marketing background needed — just hustle and a good eye for opportunity.</p>
+    </div>
+
+    <div class="careers-hero reveal" style="transition-delay:0.1s">
+
+      <div class="careers-left">
+        <h2>Become a <span class="gradient">Business Development Partner</span></h2>
+        <p>Your role is simple: find local businesses that deserve better online results and introduce them to Repify. We handle everything else — the pitch, the onboarding, the delivery.</p>
+
+        <div class="opp-cards" style="margin-top:2rem;">
+          <div class="opp-card">
+            <div class="opp-icon">🔍</div>
+            <div>
+              <h4>Scout & Refer</h4>
+              <p>Identify local businesses with weak online presence — restaurants, trades, salons, gyms, clinics — and make an introduction.</p>
+            </div>
+          </div>
+          <div class="opp-card">
+            <div class="opp-icon">💰</div>
+            <div>
+              <h4>Earn Commission</h4>
+              <p>Earn a recurring commission on every client you bring in, for as long as they stay with Repify. No cap, no ceiling.</p>
+            </div>
+          </div>
+          <div class="opp-card">
+            <div class="opp-icon">🌏</div>
+            <div>
+              <h4>Work From Anywhere</h4>
+              <p>This is a flexible, remote-friendly role. You set your own hours and targets. Ideal for networkers, real estate agents, mortgage brokers, or anyone with a strong local network.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="perks-list">
+          <div class="perk">
+            <div class="perk-icon">✅</div>
+            <div class="perk-text"><strong>No experience required</strong> — we train you on everything</div>
+          </div>
+          <div class="perk">
+            <div class="perk-icon">✅</div>
+            <div class="perk-text"><strong>Full sales support</strong> — we handle all follow-up and closing</div>
+          </div>
+          <div class="perk">
+            <div class="perk-icon">✅</div>
+            <div class="perk-text"><strong>Monthly payouts</strong> — transparent, on-time, every time</div>
+          </div>
+          <div class="perk">
+            <div class="perk-icon">✅</div>
+            <div class="perk-text"><strong>Performance bonuses</strong> — top partners earn serious income</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="careers-right">
+        <div class="apply-card glass">
+          <h3>Apply to Partner With Us</h3>
+          <p class="sub">Fill out the form below and our team will be in touch within 24 hours.</p>
+
+          <div class="form-field">
+            <label>Full Name</label>
+            <input type="text" placeholder="e.g. Alex Johnson">
+          </div>
+          <div class="form-field">
+            <label>Email Address</label>
+            <input type="email" placeholder="you@email.com">
+          </div>
+          <div class="form-field">
+            <label>Phone Number</label>
+            <input type="tel" placeholder="+61 4XX XXX XXX">
+          </div>
+          <div class="form-field">
+            <label>Your City / State</label>
+            <input type="text" placeholder="e.g. Brisbane, QLD">
+          </div>
+          <div class="form-field">
+            <label>How do you plan to find businesses?</label>
+            <select>
+              <option value="" disabled selected>Select your approach...</option>
+              <option>I have an existing local business network</option>
+              <option>I work in real estate / finance / hospitality</option>
+              <option>I'll cold-approach local businesses in my area</option>
+              <option>I have a social media following</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Anything else you'd like us to know?</label>
+            <textarea placeholder="Tell us about yourself, your network, and why you'd be a great Repify partner..."></textarea>
+          </div>
+
+          <button class="submit-btn" onclick="handleApply()">Submit Application →</button>
+
+          <div class="or-email">
+            Or email us directly at <a href="mailto:repifymanagement@gmail.com">repifymanagement@gmail.com</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <img src="logo.png" alt="Repify" onerror="this.style.display='none'">
+      <span>Repify</span>
+    </div>
+    <div class="footer-links">
+      <a href="#who">Who We Are</a>
+      <a href="#what">What We Do</a>
+      <a href="#stories">Success Stories</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#careers">Careers</a>
+      <a href="mailto:repifymanagement@gmail.com">Contact</a>
+    </div>
+    <p class="footer-copy">© 2026 Repify — Built for modern local business growth. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+// ── Mobile menu ──
+function toggleMenu() {
+  const menu = document.getElementById('mobileMenu');
+  menu.classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+// ── Active nav link on scroll ──
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop - 100;
+    if (window.scrollY >= sectionTop) {
+      current = section.getAttribute('id');
+    }
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+});
+
+// ── Scroll reveal ──
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+
+// ── Careers form ──
+function handleApply() {
+  const btn = document.querySelector('.submit-btn');
+  const name = document.querySelector('input[placeholder="e.g. Alex Johnson"]').value.trim();
+  const email = document.querySelector('input[type="email"]').value.trim();
+
+  if (!name || !email) {
+    btn.textContent = 'Please fill in your name & email';
+    btn.style.background = 'rgba(239,68,68,0.7)';
+    setTimeout(() => {
+      btn.textContent = 'Submit Application →';
+      btn.style.background = '';
+    }, 2500);
+    return;
+  }
+
+  btn.textContent = '✓ Application Sent!';
+  btn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
+  btn.disabled = true;
+
+  // Open email client as fallback
+  window.location.href = `mailto:repifymanagement@gmail.com?subject=Partner Application — ${encodeURIComponent(name)}&body=Name: ${encodeURIComponent(name)}%0AEmail: ${encodeURIComponent(email)}%0A%0AApplication submitted via Repify website.`;
+}
+</script>
+
+</body>
+</html>
